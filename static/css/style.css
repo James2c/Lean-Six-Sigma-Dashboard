@@ -546,3 +546,64 @@ textarea {
     background: #FCE8E8;
     color: #B23A3A;
 }
+
+
+
+/* Project Search and Filters */
+.project-filters {
+    padding: 20px 22px;
+    border-bottom: 1px solid var(--border);
+}
+
+.project-filters .form-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.project-filters .form-control,
+.project-filters .form-select {
+    font-size: 13px;
+    border-color: var(--border);
+    padding: 9px 12px;
+}
+
+.project-filters .form-control:focus,
+.project-filters .form-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.15rem rgba(36, 92, 79, 0.12);
+}
+
+
+
+/* Project Pagination */
+.project-pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding: 18px 22px;
+    border-top: 1px solid var(--border);
+}
+
+.pagination-info {
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+
+.pagination-current {
+    color: var(--text-secondary);
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.project-pagination .btn {
+    font-size: 12px;
+}
+
+@media (max-width: 576px) {
+    .project-pagination {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

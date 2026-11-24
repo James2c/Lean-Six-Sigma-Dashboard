@@ -22,16 +22,68 @@
 </div>
 
 
+
 <!-- Project Summary -->
 <div class="row g-3 mb-4">
-    <div class="col-12 col-md-4">
-        <div class="kpi-card">
-            <div class="kpi-label">Total Projects</div>
+
+    <!-- Total Projects -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="kpi-card h-100">
+            <div class="kpi-card-header">
+                <span class="kpi-label">Total Projects</span>
+                <div class="kpi-icon icon-green">
+                    <i class="bi bi-folder2-open"></i>
+                </div>
+            </div>
             <div class="kpi-value">{{ total_projects }}</div>
-            <div class="kpi-note">Projects in the workspace</div>
+            <div class="kpi-note">Projects in your workspace</div>
         </div>
     </div>
+
+    <!-- Active Projects -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="kpi-card h-100">
+            <div class="kpi-card-header">
+                <span class="kpi-label">Active Projects</span>
+                <div class="kpi-icon icon-blue">
+                    <i class="bi bi-play-circle"></i>
+                </div>
+            </div>
+            <div class="kpi-value">{{ active_projects }}</div>
+            <div class="kpi-note">Currently in progress</div>
+        </div>
+    </div>
+
+    <!-- Completed Projects -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="kpi-card h-100">
+            <div class="kpi-card-header">
+                <span class="kpi-label">Completed</span>
+                <div class="kpi-icon icon-green">
+                    <i class="bi bi-check-circle"></i>
+                </div>
+            </div>
+            <div class="kpi-value">{{ completed_projects }}</div>
+            <div class="kpi-note">Successfully completed</div>
+        </div>
+    </div>
+
+    <!-- On Hold -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="kpi-card h-100">
+            <div class="kpi-card-header">
+                <span class="kpi-label">On Hold</span>
+                <div class="kpi-icon icon-gold">
+                    <i class="bi bi-pause-circle"></i>
+                </div>
+            </div>
+            <div class="kpi-value">{{ on_hold_projects }}</div>
+            <div class="kpi-note">Temporarily paused</div>
+        </div>
+    </div>
+
 </div>
+
 
 <!-- Projects Table -->
 <div class="content-card">
@@ -44,6 +96,90 @@
             </small>
         </div>
     </div>
+
+    <!-- Project Search and Filters -->
+    <div class="project-filters">
+
+        <form method="GET" class="row g-3 align-items-end">
+
+            <div class="col-12 col-lg-4">
+                <label class="form-label">Search Projects</label>
+                <input
+                    type="text"
+                    name="q"
+                    class="form-control"
+                    placeholder="Search by project name or description..."
+                    value="{{ search_query }}"
+                >
+            </div>
+
+            <div class="col-12 col-md-5 col-lg-3">
+                <label class="form-label">Status</label>
+                <select name="status" class="form-select">
+                    <option value="">All Statuses</option>
+                    <option value="Planning"
+                        {% if selected_status == 'Planning' %}selected{% endif %}>
+                        Planning
+                    </option>
+                    <option value="In Progress"
+                        {% if selected_status == 'In Progress' %}selected{% endif %}>
+                        In Progress
+                    </option>
+                    <option value="On Hold"
+                        {% if selected_status == 'On Hold' %}selected{% endif %}>
+                        On Hold
+                    </option>
+                    <option value="Completed"
+                        {% if selected_status == 'Completed' %}selected{% endif %}>
+                        Completed
+                    </option>
+                    <option value="Cancelled"
+                        {% if selected_status == 'Cancelled' %}selected{% endif %}>
+                        Cancelled
+                    </option>
+                </select>
+            </div>
+
+            <div class="col-12 col-md-5 col-lg-3">
+                <label class="form-label">Priority</label>
+                <select name="priority" class="form-select">
+                    <option value="">All Priorities</option>
+                    <option value="Low"
+                        {% if selected_priority == 'Low' %}selected{% endif %}>
+                        Low
+                    </option>
+                    <option value="Medium"
+                        {% if selected_priority == 'Medium' %}selected{% endif %}>
+                        Medium
+                    </option>
+                    <option value="High"
+                        {% if selected_priority == 'High' %}selected{% endif %}>
+                        High
+                    </option>
+                    <option value="Critical"
+                        {% if selected_priority == 'Critical' %}selected{% endif %}>
+                        Critical
+                    </option>
+                </select>
+            </div>
+
+            <div class="col-12 col-lg-2 d-flex gap-2">
+                <button type="submit" class="btn btn-primary flex-grow-1">
+                    <i class="bi bi-search me-1"></i>
+                    Apply
+                </button>
+
+                <a href="{% url 'project_list' %}"
+                class="btn btn-light border"
+                title="Clear filters">
+                    <i class="bi bi-arrow-counterclockwise"></i>
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+
 
     <div class="table-responsive">
         <table class="table project-table align-middle mb-0">
@@ -112,6 +248,52 @@
             </tbody>
         </table>
     </div>
+
+    {% if projects.has_other_pages %}
+    <div class="project-pagination">
+
+        <div class="pagination-info">
+            Showing {{ projects.start_index }}–{{ projects.end_index }}
+            of {{ projects.paginator.count }} projects
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+
+            {% if projects.has_previous %}
+                <a href="?{% if filter_query %}{{ filter_query }}&{% endif %}page={{ projects.previous_page_number }}"
+                class="btn btn-light border btn-sm">
+                    <i class="bi bi-chevron-left"></i>
+                    Previous
+                </a>
+            {% else %}
+                <button class="btn btn-light border btn-sm" disabled>
+                    <i class="bi bi-chevron-left"></i>
+                    Previous
+                </button>
+            {% endif %}
+
+            <span class="pagination-current">
+                Page {{ projects.number }} of {{ projects.paginator.num_pages }}
+            </span>
+
+            {% if projects.has_next %}
+                <a href="?{% if filter_query %}{{ filter_query }}&{% endif %}page={{ projects.next_page_number }}"
+                class="btn btn-light border btn-sm">
+                    Next
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            {% else %}
+                <button class="btn btn-light border btn-sm" disabled>
+                    Next
+                    <i class="bi bi-chevron-right"></i>
+                </button>
+            {% endif %}
+
+        </div>
+
+    </div>
+    {% endif %}
+
 
 </div>
 
