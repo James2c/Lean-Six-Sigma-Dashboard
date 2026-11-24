@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Project | SigmaFlow{% endblock %}
+{% block page_title %}Delete Project{% endblock %}
+{% block breadcrumb %}Home / Projects / Delete Project{% endblock %}
+
+{% block content %}
+
+<div class="mb-4">
+    <h4 class="fw-bold mb-1">Delete Project</h4>
+    <p class="text-secondary mb-0">
+        Review your selection before proceeding.
+    </p>
+</div>
+
+<div class="content-card">
+    <div class="p-4">
+
+        <div class="text-center py-4">
+
+            <div class="delete-icon mb-3">
+                <i class="bi bi-exclamation-triangle"></i>
+            </div>
+
+            <h5 class="fw-bold">Are you sure?</h5>
+
+            <p class="text-secondary">
+                You are about to permanently delete
+                <strong>{{ project.name }}</strong>.
+            </p>
+
+            <p class="text-secondary small">
+                This action cannot be undone.
+            </p>
+
+            <form method="POST" class="d-flex justify-content-center gap-2 mt-4">
+                {% csrf_token %}
+
+                <a href="{% url 'project_detail' project.id %}"
+                   class="btn btn-light border">
+                    Cancel
+                </a>
+
+                <button type="submit" class="btn btn-danger">
+                    <i class="bi bi-trash me-1"></i>
+                    Delete Project
+                </button>
+            </form>
+
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

@@ -401,3 +401,148 @@ textarea {
     color: var(--text-secondary);
     font-size: 11px;
 }
+
+
+
+/* Content Cards */
+.content-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.content-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 22px;
+    border-bottom: 1px solid var(--border);
+}
+
+.content-card-header h5 {
+    font-size: 15px;
+}
+
+.project-table {
+    font-size: 13px;
+}
+
+.project-table thead th {
+    background: #F8FAF9;
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    padding: 15px 18px;
+    white-space: nowrap;
+}
+
+.project-table tbody td {
+    padding: 16px 18px;
+    color: var(--text-primary);
+}
+
+.project-table tbody tr:hover {
+    background: #FAFCFB;
+}
+
+
+/* Project Detail Page */
+.detail-label {
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 7px;
+}
+
+.detail-value {
+    color: var(--text-primary);
+    font-size: 14px;
+}
+
+.project-name-link {
+    color: var(--primary);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.project-name-link:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+
+
+/* Delete Project Confirmation */
+.delete-icon {
+    width: 65px;
+    height: 65px;
+    margin: 0 auto;
+    border-radius: 50%;
+    background: #FCE8E8;
+    color: #C0392B;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+}
+
+
+/* Project Status Badges */
+.status-badge,
+.priority-badge {
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.status-planning {
+    background: #EAF0F8;
+    color: #42658F;
+}
+
+.status-in-progress {
+    background: #E5F0EC;
+    color: #245C4F;
+}
+
+.status-on-hold {
+    background: #FFF3D9;
+    color: #9A7021;
+}
+
+.status-completed {
+    background: #DDF3E5;
+    color: #287747;
+}
+
+.status-cancelled {
+    background: #FCE8E8;
+    color: #B23A3A;
+}
+
+/* Project Priority Badges */
+.priority-low {
+    background: #EDF1F4;
+    color: #647480;
+}
+
+.priority-medium {
+    background: #E7EFFB;
+    color: #4776B8;
+}
+
+.priority-high {
+    background: #FFF0D9;
+    color: #A66C16;
+}
+
+.priority-critical {
+    background: #FCE8E8;
+    color: #B23A3A;
+}
