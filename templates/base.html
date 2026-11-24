@@ -15,26 +15,85 @@
         rel="stylesheet"
     >
 
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    >
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
     {% block extra_css %}{% endblock %}
 </head>
 
+
 <body>
 
-    <div class="app-wrapper">
+    <div class="app-layout">
 
-        {% block content %}
-        {% endblock %}
+        {% include 'sidebar.html' %}
+
+
+        <main class="main-content">
+
+            <!-- Top Navigation -->
+            <header class="topbar">
+
+                <div class="topbar-left">
+                    <div>
+                        <h5 class="topbar-title">
+                            {% block page_title %}Dashboard{% endblock %}
+                        </h5>
+
+                        <small class="text-secondary">
+                            {% block breadcrumb %}Home / Dashboard{% endblock %}
+                        </small>
+                    </div>
+                </div>
+
+                <div class="topbar-right">
+
+                    <div class="topbar-search">
+                        <i class="bi bi-search"></i>
+                        <input type="text" placeholder="Search...">
+                    </div>
+
+                    <button class="topbar-icon" type="button">
+                        <i class="bi bi-bell"></i>
+                    </button>
+
+                    <div class="profile-area">
+                        <div class="profile-avatar">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
+
+                        <div class="profile-details">
+                            <strong>Administrator</strong>
+                            <small>Personal Workspace</small>
+                        </div>
+                    </div>
+
+                </div>
+
+            </header>
+
+            <!-- Page Content -->
+            <section class="page-content">
+
+                {% block content %}
+                {% endblock %}
+
+            </section>
+
+        </main>
 
     </div>
 
-    <!-- Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     {% block extra_js %}{% endblock %}
 
 </body>
+
 
 </html>

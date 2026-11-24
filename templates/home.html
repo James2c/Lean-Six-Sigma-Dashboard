@@ -2,35 +2,78 @@
 {% extends 'base.html' %}
 
 {% block title %}Dashboard | SigmaFlow{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block breadcrumb %}Home / Dashboard{% endblock %}
 
 {% block content %}
 
-<div class="container py-5">
-
-    <div class="text-center">
-
-        <h1 class="display-4 fw-bold">
-            SigmaFlow
-        </h1>
-
-        <p class="lead text-secondary">
-            Lean Six Sigma Management & Analytics
+<!-- Dashboard Heading -->
+<div class="dashboard-heading mb-4">
+    <div>
+        <h4 class="fw-bold mb-1">Overview</h4>
+        <p class="text-secondary mb-0">
+            Track your continuous improvement activity.
         </p>
+    </div>
+</div>
 
-        <hr class="my-4">
+<!-- KPI Cards -->
+<div class="row g-3">
 
-        <h4 class="mt-4">
-            Welcome to SigmaFlow
-        </h4>
+    <!-- Active Projects -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="kpi-card h-100">
+            <div class="kpi-card-header">
+                <span class="kpi-label">Active Projects</span>
+                <div class="kpi-icon icon-green">
+                    <i class="bi bi-folder2-open"></i>
+                </div>
+            </div>
+            <div class="kpi-value">08</div>
+            <div class="kpi-note">Projects currently underway</div>
+        </div>
+    </div>
 
-        <p class="text-secondary">
-            Your continuous improvement journey starts here.
-        </p>
+    <!-- Completed Projects -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="kpi-card h-100">
+            <div class="kpi-card-header">
+                <span class="kpi-label">Completed Projects</span>
+                <div class="kpi-icon icon-blue">
+                    <i class="bi bi-check-circle"></i>
+                </div>
+            </div>
+            <div class="kpi-value">14</div>
+            <div class="kpi-note">Successfully completed</div>
+        </div>
+    </div>
 
-        <span class="badge text-bg-success">
-            Application Initialized
-        </span>
+    <!-- Cost Savings -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="kpi-card h-100">
+            <div class="kpi-card-header">
+                <span class="kpi-label">Total Cost Savings</span>
+                <div class="kpi-icon icon-gold">
+                    <i class="bi bi-cash-stack"></i>
+                </div>
+            </div>
+            <div class="kpi-value">$42,500</div>
+            <div class="kpi-note">Documented financial benefits</div>
+        </div>
+    </div>
 
+    <!-- Improvement Rate -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="kpi-card h-100">
+            <div class="kpi-card-header">
+                <span class="kpi-label">Improvement Rate</span>
+                <div class="kpi-icon icon-purple">
+                    <i class="bi bi-graph-up-arrow"></i>
+                </div>
+            </div>
+            <div class="kpi-value">87.5%</div>
+            <div class="kpi-note">Illustrative performance figure</div>
+        </div>
     </div>
 
 </div>
