@@ -22,17 +22,17 @@
             MAIN MENU
         </div>
 
-        <a href="{% url 'home' %}" class="sidebar-link active">
+        <a href="{% url 'home' %}" class="sidebar-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
             <i class="bi bi-grid-1x2"></i>
             <span>Dashboard</span>
         </a>
 
-        <a href="{% url 'project_list' %}" class="sidebar-link">
+        <a href="{% url 'project_list' %}" class="sidebar-link {% if request.resolver_match.url_name == 'project_list' or request.resolver_match.url_name == 'project_detail' %}active{% endif %}">
             <i class="bi bi-folder2-open"></i>
             <span>Projects</span>
         </a>
 
-        <a href="{% url 'dmaic_project_list' %}" class="sidebar-link">
+        <a href="{% url 'dmaic_project_list' %}" class="sidebar-link {% if request.resolver_match.url_name == 'dmaic_project_list' or request.resolver_match.url_name == 'dmaic_workspace' %}active{% endif %}">
             <i class="bi bi-diagram-3"></i>
             <span>DMAIC Workspace</span>
         </a>
@@ -51,7 +51,7 @@
             <span>Quality & Risk</span>
         </a>
 
-        <a href="#" class="sidebar-link">
+        <a href="#" class="sidebar-link {% if request.resolver_match.app_name == 'performance' %}active{% endif %}">
             <i class="bi bi-graph-up"></i>
             <span>Performance</span>
         </a>

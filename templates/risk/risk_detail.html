@@ -1,0 +1,240 @@
+
+{% extends 'base.html' %}
+
+{% block title %}{{ risk.title }} | SigmaFlow{% endblock %}
+{% block page_title %}Risk Details{% endblock %}
+{% block breadcrumb %}Home / Projects / {{ project.name }} / Risk Register / {{ risk.title }}{% endblock %}
+
+{% block content %}
+
+<!-- Page Heading -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+        <h4 class="fw-bold mb-1">{{ risk.title }}</h4>
+        <p class="text-secondary mb-0">
+            Risk details and assessment information.
+        </p>
+    </div>
+
+    <div class="d-flex gap-2">
+
+        <a href="{% url 'risk_edit' project.id risk.id %}"
+           class="btn btn-primary">
+            <i class="bi bi-pencil-square me-1"></i>
+            Edit Risk
+        </a>
+
+        <a href="{% url 'risk_delete' project.id risk.id %}"
+            class="btn btn-outline-danger">
+            <i class="bi bi-trash me-1"></i>
+            Delete Risk
+        </a>
+
+        <a href="{% url 'risk_list' project.id %}"
+           class="btn btn-light border">
+            <i class="bi bi-arrow-left me-1"></i>
+            Back to Risk Register
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- Risk Overview -->
+<div class="content-card mb-4">
+
+    <div class="content-card-header">
+        <h5 class="fw-bold mb-0">Risk Overview</h5>
+    </div>
+
+    <div class="p-4">
+
+        <div class="row g-4">
+
+            <div class="col-md-6">
+                <div class="detail-label">Risk Title</div>
+                <div class="detail-value">{{ risk.title }}</div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="detail-label">Project</div>
+                <div class="detail-value">{{ project.name }}</div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="detail-label">Category</div>
+                <div class="detail-value">{{ risk.category }}</div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="detail-label">Status</div>
+                <div class="detail-value">
+                    {% if risk.status == 'Open' %}
+                        <span class="badge bg-danger">Open</span>
+                    {% elif risk.status == 'In Progress' %}
+                        <span class="badge bg-primary">In Progress</span>
+                    {% elif risk.status == 'Mitigated' %}
+                        <span class="badge bg-success">Mitigated</span>
+                    {% else %}
+                        <span class="badge bg-secondary">Closed</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-12">
+                <div class="detail-label">Description</div>
+                <div class="detail-value">
+                    {{ risk.description|linebreaks }}
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+<!-- Risk Assessment -->
+<div class="content-card mb-4">
+
+    <div class="content-card-header">
+        <h5 class="fw-bold mb-0">Risk Assessment</h5>
+    </div>
+
+    <div class="p-4">
+
+        <div class="row g-4">
+
+            <div class="col-md-4">
+                <div class="detail-label">Likelihood</div>
+                <div class="detail-value">
+                    {{ risk.likelihood }} / 5
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="detail-label">Impact</div>
+                <div class="detail-value">
+                    {{ risk.impact }} / 5
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="detail-label">Risk Score</div>
+                <div class="detail-value fw-bold">
+                    {{ risk.risk_score }} / 25
+                </div>
+            </div>
+
+            <div class="col-12">
+                <div class="detail-label">Risk Level</div>
+
+                <div class="detail-value">
+
+                    {% if risk.risk_level == 'Low' %}
+                        <span class="badge bg-success">Low</span>
+
+                    {% elif risk.risk_level == 'Moderate' %}
+                        <span class="badge bg-info text-dark">Moderate</span>
+
+                    {% elif risk.risk_level == 'High' %}
+                        <span class="badge bg-warning text-dark">High</span>
+
+                    {% else %}
+                        <span class="badge bg-danger">Critical</span>
+                    {% endif %}
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+<!-- Mitigation and Ownership -->
+<div class="content-card mb-4">
+
+    <div class="content-card-header">
+        <h5 class="fw-bold mb-0">Mitigation and Ownership</h5>
+    </div>
+
+    <div class="p-4">
+
+        <div class="row g-4">
+
+            <div class="col-md-6">
+                <div class="detail-label">Risk Owner</div>
+                <div class="detail-value">
+                    {{ risk.owner|default:"Not assigned" }}
+                </div>
+            </div>
+
+            <div class="col-12">
+                <div class="detail-label">Mitigation Plan</div>
+                <div class="detail-value">
+                    {% if risk.mitigation_plan %}
+                        {{ risk.mitigation_plan|linebreaks }}
+                    {% else %}
+                        <span class="text-secondary">
+                            No mitigation plan provided.
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+<!-- Risk Timeline -->
+<div class="content-card mb-4">
+
+    <div class="content-card-header">
+        <h5 class="fw-bold mb-0">Risk Timeline</h5>
+    </div>
+
+    <div class="p-4">
+
+        <div class="row g-4">
+
+            <div class="col-md-6">
+                <div class="detail-label">Identified Date</div>
+                <div class="detail-value">
+                    {{ risk.identified_date|date:"M d, Y" }}
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="detail-label">Target Resolution Date</div>
+                <div class="detail-value">
+                    {{ risk.target_resolution_date|date:"M d, Y"|default:"Not set" }}
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="detail-label">Created</div>
+                <div class="detail-value">
+                    {{ risk.created_at|date:"M d, Y" }}
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="detail-label">Last Updated</div>
+                <div class="detail-value">
+                    {{ risk.updated_at|date:"M d, Y" }}
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+{% endblock %}

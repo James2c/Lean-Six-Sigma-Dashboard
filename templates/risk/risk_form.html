@@ -1,0 +1,179 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Create Risk | SigmaFlow{% endblock %}
+{% block page_title %}Create Risk{% endblock %}
+{% block breadcrumb %}Home / Projects / Risk Register / Create Risk{% endblock %}
+
+{% block content %}
+
+<div class="mb-4">
+    <h1>
+        {% if is_edit %}
+            Edit Risk
+        {% else %}
+            Identify New Risk
+        {% endif %}
+    </h1>
+    <p class="text-secondary mb-0">
+        Document and assess a potential risk for {{ project.name }}.
+    </p>
+</div>
+
+<form method="POST">
+    {% csrf_token %}
+
+    <!-- Basic Information -->
+    <div class="content-card mb-4">
+
+        <div class="content-card-header">
+            <h5 class="mb-0 fw-bold">Basic Information</h5>
+        </div>
+
+        <div class="p-4">
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Risk Title</label>
+                {{ form.title }}
+                {{ form.title.errors }}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Description</label>
+                {{ form.description }}
+                {{ form.description.errors }}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Category</label>
+                {{ form.category }}
+                {{ form.category.errors }}
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Risk Assessment -->
+    <div class="content-card mb-4">
+
+        <div class="content-card-header">
+            <h5 class="mb-0 fw-bold">Risk Assessment</h5>
+        </div>
+
+        <div class="p-4">
+
+            <div class="row g-3">
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Likelihood (1–5)</label>
+                    {{ form.likelihood }}
+                    {{ form.likelihood.errors }}
+                    <small class="text-secondary">
+                        How likely is this risk to occur?
+                    </small>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Impact (1–5)</label>
+                    {{ form.impact }}
+                    {{ form.impact.errors }}
+                    <small class="text-secondary">
+                        How severe would the consequences be?
+                    </small>
+                </div>
+
+            </div>
+
+            <div class="alert alert-light border mt-4 mb-0">
+                <i class="bi bi-info-circle me-2"></i>
+                Risk Score is calculated automatically using
+                Likelihood × Impact.
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Mitigation and Ownership -->
+    <div class="content-card mb-4">
+
+        <div class="content-card-header">
+            <h5 class="mb-0 fw-bold">Mitigation and Ownership</h5>
+        </div>
+
+        <div class="p-4">
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Mitigation Plan</label>
+                {{ form.mitigation_plan }}
+                {{ form.mitigation_plan.errors }}
+            </div>
+
+            <div class="row g-3">
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Risk Owner</label>
+                    {{ form.owner }}
+                    {{ form.owner.errors }}
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Status</label>
+                    {{ form.status }}
+                    {{ form.status.errors }}
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Risk Dates -->
+    <div class="content-card mb-4">
+
+        <div class="content-card-header">
+            <h5 class="mb-0 fw-bold">Risk Timeline</h5>
+        </div>
+
+        <div class="p-4">
+
+            <div class="row g-3">
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Identified Date</label>
+                    {{ form.identified_date }}
+                    {{ form.identified_date.errors }}
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Target Resolution Date</label>
+                    {{ form.target_resolution_date }}
+                    {{ form.target_resolution_date.errors }}
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="d-flex justify-content-end gap-2">
+
+        <a href="{% if is_edit %}{% url 'risk_detail' project.id risk.id %}{% else %}{% url 'risk_list' project.id %}{% endif %}"
+        class="btn btn-light border">
+            Cancel
+        </a>
+
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-1"></i>
+            {% if is_edit %}
+                Save Changes
+            {% else %}
+                Create Risk
+            {% endif %}
+        </button>
+
+    </div>
+
+</form>
+
+{% endblock %}

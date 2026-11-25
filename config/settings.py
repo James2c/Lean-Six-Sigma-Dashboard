@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'dmaic',
     'toolkit',
     'quality',
+    'risk',
     'performance',
     'finance',
     'reports',

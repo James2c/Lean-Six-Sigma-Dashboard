@@ -1,0 +1,157 @@
+
+{% extends "base.html" %}
+
+{% block title %}Risk Assessment Matrix | SigmaFlow{% endblock %}
+
+{% block page_title %}Risk Assessment Matrix{% endblock %}
+
+{% block breadcrumb %}
+    Risk Management / Risk Assessment Matrix
+{% endblock %}
+
+{% block content %}
+
+<!-- Page Heading -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+        <h4 class="fw-bold mb-1">Risk Assessment Matrix</h4>
+        <p class="text-secondary mb-0">
+            Visual assessment of project risks based on likelihood and impact.
+        </p>
+    </div>
+
+    <div>
+        <a href="{% url 'risk_list' project.id %}"
+           class="btn btn-light border">
+            <i class="bi bi-arrow-left me-1"></i>
+            Back to Risk Register
+        </a>
+    </div>
+
+</div>
+
+<!-- Project Information -->
+<div class="content-card mb-4">
+
+    <div class="p-4">
+
+        <div class="detail-label">Project</div>
+
+        <div class="detail-value">
+            {{ project.name }}
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Risk Assessment Matrix -->
+<div class="content-card">
+
+    <div class="content-card-header">
+        <h5 class="fw-semibold mb-0">
+            5 × 5 Risk Assessment Matrix
+        </h5>
+    </div>
+
+    <div class="p-4">
+
+        <div class="table-responsive">
+
+            <table class="table table-bordered text-center align-middle mb-0">
+
+                <thead>
+                    <tr>
+                        <th style="min-width: 130px;">
+                            Likelihood / Impact
+                        </th>
+
+                        {% for impact in "12345" %}
+                            <th class="text-center">
+                                {{ impact }}
+                            </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for row in matrix_rows %}
+
+                        <tr>
+
+                            <th>
+                                {{ row.likelihood }}
+                            </th>
+
+                            {% for cell in row.cells %}
+
+                                <td class="{{ cell.color }} text-white"
+                                    style="height: 100px; min-width: 110px;">
+
+                                    <div class="fw-bold mb-1">
+                                        {{ cell.score }}
+                                    </div>
+
+                                    <div class="small mb-2">
+                                        {{ cell.level }}
+                                    </div>
+
+                                    {% for risk in cell.risks %}
+
+                                        <a href="{% url 'risk_detail' project.id risk.id %}"
+                                        class="d-block small text-white fw-semibold text-decoration-underline mb-1">
+
+                                            {{ risk.title }}
+
+                                        </a>
+
+                                    {% endfor %}
+
+                                </td>
+
+                            {% endfor %}
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+            <!-- Risk Level Legend -->
+            <div class="d-flex flex-wrap gap-3 justify-content-center mt-4">
+
+                <div>
+                    <span class="badge bg-success">Low</span>
+                    <span class="small text-secondary">1–4</span>
+                </div>
+
+                <div>
+                    <span class="badge bg-info text-dark">Moderate</span>
+                    <span class="small text-secondary">5–9</span>
+                </div>
+
+                <div>
+                    <span class="badge bg-warning text-dark">High</span>
+                    <span class="small text-secondary">10–16</span>
+                </div>
+
+                <div>
+                    <span class="badge bg-danger">Critical</span>
+                    <span class="small text-secondary">17–25</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+{% endblock %}

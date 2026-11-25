@@ -11,4 +11,5 @@ urlpatterns = [
     path('projects/', include('projects.urls')),
     path('dmaic/', include(dmaic_urls)),
     path('performance/', include(performance_urls)),
+    path('risk/', include('risk.urls')),
 ]
