@@ -1,6 +1,5 @@
-
 from django.contrib import admin
-from .models import Project
+from .models import Project, ProjectGoal
 
 
 @admin.register(Project)
@@ -67,4 +66,33 @@ class ProjectAdmin(admin.ModelAdmin):
                 'updated_at',
             )
         }),
+    )
+
+
+@admin.register(ProjectGoal)
+class ProjectGoalAdmin(admin.ModelAdmin):
+
+    list_display = (
+        'name',
+        'project',
+        'direction',
+        'baseline_value',
+        'target_value',
+        'unit',
+        'target_date',
+    )
+
+    list_filter = (
+        'direction',
+        'target_date',
+    )
+
+    search_fields = (
+        'name',
+        'project__name',
+    )
+
+    ordering = (
+        'target_date',
+        'name',
     )

@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Measurement | SigmaFlow{% endblock %}
+{% block page_title %}Add Measurement{% endblock %}
+{% block breadcrumb %}Home / Projects / {{ metric.project.name }} / Metrics / {{ metric.name }} / Add Measurement{% endblock %}
+
+{% block content %}
+
+<!-- Page Heading -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+        <h4 class="fw-bold mb-1">Add Measurement</h4>
+        <p class="text-secondary mb-0">
+            Record a new performance measurement.
+        </p>
+    </div>
+
+    <a href="{% url 'performance:metric_detail' metric.id %}"
+       class="btn btn-light border">
+        <i class="bi bi-arrow-left me-1"></i>
+        Back to Metric
+    </a>
+
+</div>
+
+
+<!-- Metric Information -->
+<div class="content-card mb-4">
+
+    <div class="content-card-header">
+        <h5 class="fw-bold mb-0">Metric Information</h5>
+    </div>
+
+    <div class="p-4">
+
+        <div class="row g-4">
+
+            <div class="col-md-6">
+                <div class="detail-label">Metric</div>
+                <div class="detail-value">{{ metric.name }}</div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="detail-label">Project</div>
+                <div class="detail-value">{{ metric.project.name }}</div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+<!-- Measurement Form -->
+<div class="content-card mb-4">
+
+    <div class="content-card-header">
+        <h5 class="fw-bold mb-0">Measurement Details</h5>
+    </div>
+
+    <div class="p-4">
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <div class="mb-3">
+
+                <label for="{{ form.value.id_for_label }}"
+                       class="form-label fw-semibold">
+                    Measurement Value ({{ metric.unit }})
+                </label>
+
+                {{ form.value }}
+
+                {% for error in form.value.errors %}
+                    <div class="text-danger small mt-1">
+                        {{ error }}
+                    </div>
+                {% endfor %}
+
+            </div>
+
+
+            <div class="mb-3">
+
+                <label for="{{ form.recorded_at.id_for_label }}"
+                       class="form-label fw-semibold">
+                    Date Recorded
+                </label>
+
+                {{ form.recorded_at }}
+
+                {% for error in form.recorded_at.errors %}
+                    <div class="text-danger small mt-1">
+                        {{ error }}
+                    </div>
+                {% endfor %}
+
+            </div>
+
+
+            <div class="mb-4">
+
+                <label for="{{ form.notes.id_for_label }}"
+                       class="form-label fw-semibold">
+                    Notes
+                </label>
+
+                {{ form.notes }}
+
+                {% for error in form.notes.errors %}
+                    <div class="text-danger small mt-1">
+                        {{ error }}
+                    </div>
+                {% endfor %}
+
+            </div>
+
+
+            <div class="d-flex gap-2">
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-circle me-1"></i>
+                    Save Measurement
+                </button>
+
+                <a href="{% url 'performance:metric_detail' metric.id %}"
+                   class="btn btn-light border">
+                    Cancel
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}

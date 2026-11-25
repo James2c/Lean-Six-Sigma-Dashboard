@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.db.models import Q
+from django.db.models import Q, Prefetch
 from .models import Project
 from .forms import ProjectForm
 from django.core.paginator import Paginator
-
+from performance.models import DataEntry
 
 
 
@@ -97,6 +97,76 @@ def project_detail(request, project_id):
 
     project = get_object_or_404(Project, id=project_id)
 
+    metrics = project.metrics.prefetch_related(
+        Prefetch(
+            'entries',
+            queryset=DataEntry.objects.order_by(
+                '-recorded_at',
+                '-created_at'
+            ),
+            to_attr='measurement_entries'
+        )
+    )
+
+    metric_status_counts = {
+        'On Target': 0,
+        'Off Target': 0,
+        'Awaiting Data': 0,
+        'No Target': 0,
+    }
+
+    total_metrics = metrics.count()
+
+    for metric in metrics:
+
+        latest_entry = (
+            metric.measurement_entries[0]
+            if metric.measurement_entries
+            else None
+        )
+
+        performance_status = 'Awaiting Data'
+
+        if latest_entry:
+
+            if metric.target_value is None:
+
+                performance_status = 'No Target'
+
+            elif metric.direction == 'Decrease':
+
+                if latest_entry.value <= metric.target_value:
+                    performance_status = 'On Target'
+                else:
+                    performance_status = 'Off Target'
+
+            elif metric.direction == 'Increase':
+
+                if latest_entry.value >= metric.target_value:
+                    performance_status = 'On Target'
+                else:
+                    performance_status = 'Off Target'
+
+            elif metric.direction == 'Maintain':
+
+                if latest_entry.value == metric.target_value:
+                    performance_status = 'On Target'
+                else:
+                    performance_status = 'Off Target'
+
+        metric.performance_status = performance_status
+
+        metric_status_counts[performance_status] += 1
+
+    on_target_percentage = (
+        round(
+            (metric_status_counts['On Target'] / total_metrics) * 100,
+            1
+        )
+        if total_metrics > 0
+        else 0
+    )
+
     phases = project.dmaic_phases.all()
 
     total_phases = phases.count()
@@ -116,6 +186,14 @@ def project_detail(request, project_id):
         'total_phases': total_phases,
         'completed_phases': completed_phases,
         'progress_percentage': progress_percentage,
+        'metrics': metrics,
+        'metric_status_counts': metric_status_counts,
+        'on_target_count': metric_status_counts['On Target'],
+        'off_target_count': metric_status_counts['Off Target'],
+        'awaiting_data_count': metric_status_counts['Awaiting Data'],
+        'no_target_count': metric_status_counts['No Target'],
+        'total_metrics': total_metrics,
+        'on_target_percentage': on_target_percentage,
     }
 
     return render(

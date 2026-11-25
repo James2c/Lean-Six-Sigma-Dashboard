@@ -1,0 +1,425 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ metric.name }} | SigmaFlow{% endblock %}
+{% block page_title %}Metric Details{% endblock %}
+{% block breadcrumb %}Home / Projects / {{ metric.project.name }} / Metrics / {{ metric.name }}{% endblock %}
+
+{% block content %}
+
+<!-- Page Heading -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+        <h4 class="fw-bold mb-1">{{ metric.name }}</h4>
+        <p class="text-secondary mb-0">
+            Performance metric overview and measurement history.
+        </p>
+    </div>
+
+    <div class="d-flex gap-2">
+
+        <a href="{% url 'performance:data_entry_create' metric.id %}"
+        class="btn btn-primary">
+
+            <i class="bi bi-plus-circle me-1"></i>
+            Add Measurement
+
+        </a>
+
+        <a href="{% url 'performance:metric_update' metric.id %}"
+        class="btn btn-outline-primary">
+
+            <i class="bi bi-pencil-square me-1"></i>
+            Edit Metric
+
+        </a>
+
+        <a href="{% url 'performance:metric_delete' metric.id %}"
+        class="btn btn-outline-danger">
+            <i class="bi bi-trash me-1"></i>
+
+            Delete Metric
+
+        </a>
+
+        <a href="{% url 'project_detail' metric.project.id %}"
+        class="btn btn-light border">
+
+            <i class="bi bi-arrow-left me-1"></i>
+            Back to Project
+
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- Metric Overview -->
+<div class="content-card mb-4">
+
+    <div class="content-card-header">
+        <h5 class="fw-bold mb-0">Metric Overview</h5>
+    </div>
+
+    <div class="p-4">
+
+        <div class="row g-4">
+
+            <div class="col-md-6">
+                <div class="detail-label">Metric Name</div>
+                <div class="detail-value">{{ metric.name }}</div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="detail-label">Project</div>
+                <div class="detail-value">
+                    {{ metric.project.name }}
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="detail-label">Direction</div>
+                <div class="detail-value">{{ metric.direction }}</div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="detail-label">Unit</div>
+                <div class="detail-value">{{ metric.unit }}</div>
+            </div>
+
+            <div class="col-12">
+                <div class="detail-label">Description</div>
+                <div class="detail-value">
+                    {% if metric.description %}
+                        {{ metric.description|linebreaks }}
+                    {% else %}
+                        <span class="text-secondary">
+                            No description provided.
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+<!-- Performance Targets -->
+<div class="content-card mb-4">
+
+    <div class="content-card-header">
+        <h5 class="fw-bold mb-0">Performance Targets</h5>
+    </div>
+
+    <div class="p-4">
+
+        <div class="row g-4">
+
+            <div class="col-md-6">
+                <div class="detail-label">Baseline Value</div>
+                <div class="detail-value">
+                    {% if metric.baseline_value != None %}
+                        {{ metric.baseline_value|floatformat:2 }} {{ metric.unit }}
+                    {% else %}
+                        <span class="text-secondary">Not set</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="detail-label">Target Value</div>
+                <div class="detail-value">
+                    {% if metric.target_value != None %}
+                        {{ metric.target_value|floatformat:2 }} {{ metric.unit }}
+                    {% else %}
+                        <span class="text-secondary">Not set</span>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+
+<!-- Performance Status -->
+<div class="content-card mb-4">
+
+    <div class="content-card-header">
+        <h5 class="fw-bold mb-0">Performance Status</h5>
+    </div>
+
+    <div class="p-4">
+
+        <div class="d-flex align-items-center gap-3">
+
+            {% if performance_status == 'On Target' %}
+
+                <span class="badge bg-success fs-6">
+                    <i class="bi bi-check-circle me-1"></i>
+                    On Target
+                </span>
+
+            {% elif performance_status == 'Off Target' %}
+
+                <span class="badge bg-danger fs-6">
+                    <i class="bi bi-exclamation-circle me-1"></i>
+                    Off Target
+                </span>
+
+            {% elif performance_status == 'Awaiting Data' %}
+
+                <span class="badge bg-secondary fs-6">
+                    <i class="bi bi-hourglass-split me-1"></i>
+                    Awaiting Data
+                </span>
+
+            {% elif performance_status == 'No Target' %}
+
+                <span class="badge bg-warning text-dark fs-6">
+                    <i class="bi bi-info-circle me-1"></i>
+                    No Target
+                </span>
+
+            {% endif %}
+
+        </div>
+
+        <p class="text-secondary mt-3 mb-0">
+            Status is calculated using the latest measurement
+            and the metric's configured direction and target.
+        </p>
+
+    </div>
+
+</div>
+
+
+
+<!-- Performance Trend -->
+<div class="content-card mb-4">
+
+    <div class="content-card-header">
+        <h5 class="fw-bold mb-0">Performance Trend</h5>
+    </div>
+
+    <div class="p-4">
+
+        {% if chart_values %}
+
+            <div style="position: relative; height: 350px;">
+                <canvas id="performanceTrendChart"></canvas>
+            </div>
+
+        {% else %}
+
+            <div class="text-center text-secondary py-4">
+                <i class="bi bi-graph-up fs-2 mb-2 d-block"></i>
+                No measurement data available to display.
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+
+<!-- Latest Measurement -->
+<div class="content-card mb-4">
+
+    <div class="content-card-header">
+        <h5 class="fw-bold mb-0">Latest Measurement</h5>
+    </div>
+
+    <div class="p-4">
+
+        {% if latest_entry %}
+
+            <h3 class="fw-bold mb-1">
+                {{ latest_entry.value|floatformat:2 }}
+                {{ metric.unit }}
+            </h3>
+
+            <p class="text-secondary mb-0">
+                Recorded {{ latest_entry.recorded_at|date:"M d, Y" }}
+            </p>
+
+        {% else %}
+
+            <p class="text-secondary mb-0">
+                No measurements have been recorded yet.
+            </p>
+
+        {% endif %}
+
+    </div>
+</div>
+
+
+<!-- Measurement History -->
+<div class="content-card mb-4">
+
+    <div class="content-card-header">
+        <h5 class="fw-bold mb-0">Measurement History</h5>
+    </div>
+
+    <div class="table-responsive">
+
+        <table class="table table-hover align-middle mb-0">
+
+            <thead>
+                <tr>
+                    <th>Date Recorded</th>
+                    <th>Value</th>
+                    <th>Notes</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for entry in entries %}
+
+                    <tr>
+
+                        <td>
+                            {{ entry.recorded_at|date:"M d, Y" }}
+                        </td>
+
+                        <td class="fw-semibold">
+                            {{ entry.value|floatformat:2 }}
+                            {{ metric.unit }}
+                        </td>
+
+                        <td>
+                            {% if entry.notes %}
+                                {{ entry.notes }}
+                            {% else %}
+                                <span class="text-secondary">—</span>
+                            {% endif %}
+                        </td>
+
+                        <td class="text-end">
+                            <div class="d-flex justify-content-end gap-2">
+
+                                <a href="{% url 'performance:data_entry_update' entry.id %}"
+                                class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-pencil-square me-1"></i>
+                                    Edit
+                                </a>
+
+                                <a href="{% url 'performance:data_entry_delete' entry.id %}"
+                                class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-trash me-1"></i>
+                                    Delete
+                                </a>
+
+                            </div>
+                        </td>
+
+                    </tr>
+
+                {% empty %}
+
+                    <tr>
+                        <td colspan="4" class="text-center text-secondary py-4">
+                            No measurement history available.
+                        </td>
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+{% if chart_values %}
+
+<script>
+
+    const ctx = document.getElementById('performanceTrendChart');
+
+    new Chart(ctx, {
+        type: 'line',
+
+        data: {
+            labels: {{ chart_labels|safe }},
+
+            datasets: [
+                {
+                    label: '{{ metric.name|escapejs }} ({{ metric.unit|escapejs }})',
+                    data: {{ chart_values|safe }},
+                    borderWidth: 3,
+                    tension: 0.3,
+                    fill: false,
+                    pointRadius: 5,
+                    pointHoverRadius: 7
+                },
+
+                {% if chart_target_values %}
+                {
+                    label: 'Target ({{ metric.unit|escapejs }})',
+                    data: {{ chart_target_values|safe }},
+                    borderWidth: 2,
+                    borderDash: [6, 5],
+                    pointRadius: 0,
+                    pointHoverRadius: 0,
+                    tension: 0,
+                    fill: false
+                }
+                {% endif %}
+            ]
+        },
+
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                }
+            },
+
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    title: {
+                        display: true,
+                        text: '{{ metric.unit|escapejs }}'
+                    }
+                },
+
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Date Recorded'
+                    }
+                }
+            }
+        }
+    });
+
+</script>
+
+{% endif %}
+
+{% endblock %}

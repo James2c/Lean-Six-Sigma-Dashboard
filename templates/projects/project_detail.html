@@ -180,6 +180,233 @@
 </div>
 
 
+<!-- Performance Summary -->
+<div class="row g-3 mb-4">
+
+    <div class="col-md-6 col-xl">
+        <div class="content-card p-3">
+            <div class="text-secondary small">Total Metrics</div>
+            <h3 class="fw-bold mb-0">
+                {{ total_metrics }}
+            </h3>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xl">
+        <div class="content-card p-3">
+            <div class="text-secondary small">On Target</div>
+            <h3 class="fw-bold text-success mb-0">
+                {{ on_target_count }}
+            </h3>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xl">
+        <div class="content-card p-3">
+            <div class="text-secondary small">Off Target</div>
+            <h3 class="fw-bold text-danger mb-0">
+                {{ off_target_count }}
+            </h3>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xl">
+        <div class="content-card p-3">
+            <div class="text-secondary small">Awaiting Data</div>
+            <h3 class="fw-bold text-secondary mb-0">
+                {{ awaiting_data_count }}
+            </h3>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xl">
+        <div class="content-card p-3">
+            <div class="text-secondary small">No Target</div>
+            <h3 class="fw-bold text-warning mb-0">
+                {{ no_target_count }}
+            </h3>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xl">
+        <div class="content-card p-3">
+            <div class="text-secondary small">Overall Performance</div>
+            <h3 class="fw-bold text-primary mb-0">
+                {{ on_target_percentage }}%
+            </h3>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- Overall Performance Progress -->
+<div class="content-card p-4 mb-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <h6 class="fw-bold mb-0">Overall Performance</h6>
+        <span class="fw-semibold text-primary">
+            {{ on_target_percentage }}%
+        </span>
+    </div>
+
+    <div class="progress" style="height: 12px;">
+        <div
+            class="progress-bar bg-success"
+            role="progressbar"
+            style="width: {{ on_target_percentage }}%;"
+            aria-valuenow="{{ on_target_percentage }}"
+            aria-valuemin="0"
+            aria-valuemax="100"
+        ></div>
+    </div>
+
+    <small class="text-secondary mt-2 d-block">
+        {{ on_target_count }} of {{ total_metrics }} metrics currently on target.
+    </small>
+
+</div>
+
+
+<!-- Performance Metrics -->
+<div class="content-card mb-4">
+
+    <div class="content-card-header d-flex justify-content-between align-items-center">
+
+        <h5 class="fw-bold mb-0">Performance Metrics</h5>
+
+        <a href="{% url 'performance:metric_create' project.id %}"
+            class="btn btn-primary btn-sm">
+
+            <i class="bi bi-plus-circle me-1"></i>
+            Add Metric
+
+        </a>
+
+    </div>
+
+    <div class="p-4">
+
+        {% if metrics %}
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Direction</th>
+                            <th>Baseline</th>
+                            <th>Target</th>
+                            <th>Latest Value</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for metric in metrics %}
+
+                            <tr>
+
+                                <td class="fw-semibold">
+                                    {{ metric.name }}
+                                </td>
+
+                                <td>
+                                    {{ metric.direction }}
+                                </td>
+
+                                <td>
+                                    {% if metric.baseline_value != None %}
+                                        {{ metric.baseline_value|floatformat:2 }} {{ metric.unit }}
+                                    {% else %}
+                                        <span class="text-secondary">—</span>
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {% if metric.target_value != None %}
+                                        {{ metric.target_value|floatformat:2 }} {{ metric.unit }}
+                                    {% else %}
+                                        <span class="text-secondary">—</span>
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {% if metric.measurement_entries %}
+                                        {{ metric.measurement_entries.0.value|floatformat:2 }} {{ metric.unit }}
+                                    {% else %}
+                                        <span class="text-secondary">No data</span>
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {% if metric.performance_status == 'On Target' %}
+
+                                        <span class="badge bg-success">
+                                            On Target
+                                        </span>
+
+                                    {% elif metric.performance_status == 'Off Target' %}
+
+                                        <span class="badge bg-danger">
+                                            Off Target
+                                        </span>
+
+                                    {% elif metric.performance_status == 'Awaiting Data' %}
+
+                                        <span class="badge bg-secondary">
+                                            Awaiting Data
+                                        </span>
+
+                                    {% elif metric.performance_status == 'No Target' %}
+
+                                        <span class="badge bg-warning text-dark">
+                                            No Target
+                                        </span>
+
+                                    {% endif %}
+                                </td>
+
+                                <td class="text-end">
+
+                                    <a href="{% url 'performance:metric_detail' metric.id %}"
+                                       class="btn btn-outline-primary btn-sm">
+
+                                        View
+                                        <i class="bi bi-arrow-right ms-1"></i>
+
+                                    </a>
+
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <p class="text-secondary mb-0">
+                No performance metrics have been added to this project yet.
+            </p>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+
 <!-- DMAIC Progress -->
 <div class="content-card p-4 mb-4">
 
