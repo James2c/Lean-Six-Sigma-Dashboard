@@ -1,0 +1,549 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h4 class="mb-1">DMAIC Workspace</h4>
+            <p class="text-muted mb-0">
+                Improvement methodology for
+                <strong>{{ project.name }}</strong>
+            </p>
+        </div>
+
+        <a href="{% url 'project_detail' project.id %}"
+           class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>
+            Back to Project
+        </a>
+    </div>
+
+
+    <!-- Project Information -->
+    <div class="content-card p-4 mb-4">
+
+        <div class="row g-3">
+
+            <div class="col-md-4">
+                <div class="detail-label">Project</div>
+                <div class="detail-value">
+                    {{ project.name }}
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="detail-label">Project Status</div>
+                <div class="detail-value">
+                    {{ project.status }}
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="detail-label">Priority</div>
+                <div class="detail-value">
+                    {{ project.priority }}
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- DMAIC Introduction -->
+    <div class="mb-4">
+        <h5 class="mb-2">DMAIC Phases</h5>
+        <p class="text-muted">
+            Follow the five structured phases of Lean Six Sigma
+            to define problems, measure performance, identify
+            root causes, implement improvements, and sustain results.
+        </p>
+    </div>
+
+
+    <!-- DMAIC Progress Summary -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-lg col-md-6">
+            <div class="kpi-card">
+                <div class="kpi-card-header">
+                    <span class="kpi-label">Total Phases</span>
+                    <div class="kpi-icon icon-blue">
+                        <i class="bi bi-layers"></i>
+                    </div>
+                </div>
+                <div class="kpi-value">
+                    {{ total_phases }}
+                </div>
+                <div class="kpi-note">
+                    DMAIC phases
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-lg col-md-6">
+            <div class="kpi-card">
+                <div class="kpi-card-header">
+                    <span class="kpi-label">Completed</span>
+                    <div class="kpi-icon icon-green">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+                </div>
+                <div class="kpi-value">
+                    {{ completed_phases }}
+                </div>
+                <div class="kpi-note">
+                    Completed phases
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-lg col-md-6">
+            <div class="kpi-card">
+                <div class="kpi-card-header">
+                    <span class="kpi-label">In Progress</span>
+                    <div class="kpi-icon icon-gold">
+                        <i class="bi bi-arrow-repeat"></i>
+                    </div>
+                </div>
+                <div class="kpi-value">
+                    {{ in_progress_phases }}
+                </div>
+                <div class="kpi-note">
+                    Active phases
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-lg col-md-6">
+            <div class="kpi-card">
+                <div class="kpi-card-header">
+                    <span class="kpi-label">Overall Progress</span>
+                    <div class="kpi-icon icon-purple">
+                        <i class="bi bi-graph-up"></i>
+                    </div>
+                </div>
+                <div class="kpi-value">
+                    {{ progress_percentage|floatformat:0 }}%
+                </div>
+                <div class="kpi-note">
+                    Based on completed phases
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Total Deliverables -->
+        <div class="col-lg col-md-6">
+
+            <div class="kpi-card">
+
+                <div class="kpi-card-header">
+
+                    <span class="kpi-label">
+                        Total Deliverables
+                    </span>
+
+                    <div class="kpi-icon icon-blue">
+                        <i class="bi bi-clipboard-check"></i>
+                    </div>
+
+                </div>
+
+                <div class="kpi-value">
+                    {{ total_deliverables }}
+                </div>
+
+                <div class="kpi-note">
+                    {{ completed_deliverables }} completed
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Overdue Deliverables -->
+        <div class="col-lg col-md-6">
+            <div class="kpi-card">
+                <div class="kpi-card-header">
+                    <span class="kpi-label">Overdue Deliverables</span>
+                    <div class="kpi-icon icon-purple">
+                        <i class="bi bi-exclamation-triangle"></i>
+                    </div>
+                </div>
+
+                <div class="kpi-value">
+                    {{ total_overdue_deliverables }}
+                </div>
+
+                <div class="kpi-note">
+                    Deliverables past their due date
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+
+    
+<!-- Overall Project Progress -->
+<div class="content-card p-4 mb-4">
+
+    <!-- DMAIC Completion -->
+    <div class="mb-4">
+
+        <div class="d-flex justify-content-between align-items-center mb-2">
+
+            <h6 class="mb-0">
+                DMAIC Phase Completion
+            </h6>
+
+            <span class="fw-semibold">
+                {{ progress_percentage|floatformat:0 }}%
+            </span>
+
+        </div>
+
+        <div class="progress" style="height: 10px;">
+
+            <div
+                class="progress-bar"
+                role="progressbar"
+                style="width: {{ progress_percentage }}%; background-color: var(--primary);"
+                aria-valuenow="{{ progress_percentage }}"
+                aria-valuemin="0"
+                aria-valuemax="100">
+            </div>
+
+        </div>
+
+        <small class="text-muted">
+            {{ completed_phases }} of {{ total_phases }} phases completed
+        </small>
+
+    </div>
+
+
+    <!-- Deliverable Completion -->
+    <div>
+
+        <div class="d-flex justify-content-between align-items-center mb-2">
+
+            <h6 class="mb-0">
+                Deliverable Completion
+            </h6>
+
+            <span class="fw-semibold">
+                {{ deliverable_progress|floatformat:0 }}%
+            </span>
+
+        </div>
+
+        <div class="progress" style="height: 12px;">
+
+            <!-- Not Started -->
+            <div
+                class="progress-bar bg-secondary"
+                role="progressbar"
+                style="width: {{ not_started_progress }}%;"
+                aria-valuenow="{{ not_started_progress }}"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                title="Not Started: {{ total_not_started_deliverables }}">
+            </div>
+
+            <!-- In Progress -->
+            <div
+                class="progress-bar bg-primary"
+                role="progressbar"
+                style="width: {{ in_progress_progress }}%;"
+                aria-valuenow="{{ in_progress_progress }}"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                title="In Progress: {{ total_in_progress_deliverables }}">
+            </div>
+
+            <!-- Completed -->
+            <div
+                class="progress-bar bg-success"
+                role="progressbar"
+                style="width: {{ deliverable_progress }}%;"
+                aria-valuenow="{{ deliverable_progress }}"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                title="Completed: {{ completed_deliverables }}">
+            </div>
+
+        </div>
+
+        <small class="text-muted">
+            {{ completed_deliverables }} of {{ total_deliverables }} deliverables completed
+        </small>
+
+    </div>
+
+
+    <!-- Overall Deliverable Status -->
+    <div class="mt-4 pt-3 border-top">
+
+        <h6 class="mb-3">Overall Deliverable Status</h6>
+
+        <div class="d-flex justify-content-between small mb-2">
+            <span>
+                <i class="bi bi-circle-fill text-secondary me-1"></i>
+                Not Started
+            </span>
+            <strong>{{ total_not_started_deliverables }}</strong>
+        </div>
+
+        <div class="d-flex justify-content-between small mb-2">
+            <span>
+                <i class="bi bi-circle-fill text-primary me-1"></i>
+                In Progress
+            </span>
+            <strong>{{ total_in_progress_deliverables }}</strong>
+        </div>
+
+        <div class="d-flex justify-content-between small mb-2">
+            <span>
+                <i class="bi bi-circle-fill text-success me-1"></i>
+                Completed
+            </span>
+            <strong>{{ completed_deliverables }}</strong>
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+    <!-- DMAIC Phase Cards -->
+    <div class="row g-4">
+
+        {% for item in phase_progress_list %}
+
+        <div class="col-lg-4 col-md-6">
+
+            <div class="content-card h-100 p-4">
+
+                <div class="d-flex justify-content-between align-items-start mb-3">
+
+                    <div>
+                        <span class="text-muted small">
+                            PHASE {{ forloop.counter }}
+                        </span>
+
+                        <h5 class="mt-1 mb-0">
+                            <a href="{% url 'dmaic_phase_detail' project.id item.phase.id %}"
+                            class="dmaic-phase-link">
+                                {{ item.phase.phase }}
+                            </a>
+                        </h5>
+                    </div>
+
+                    {% if item.phase.status == 'Completed' %}
+
+                        <span class="badge bg-success">
+                            Completed
+                        </span>
+
+                    {% elif item.phase.status == 'In Progress' %}
+
+                        <span class="badge bg-primary">
+                            In Progress
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge bg-secondary">
+                            Not Started
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+
+                <p class="text-muted small mb-3">
+
+                    {% if item.phase.phase == 'Define' %}
+                        Establish the problem, project goals,
+                        scope, and customer requirements.
+
+                    {% elif item.phase.phase == 'Measure' %}
+                        Collect baseline data and understand
+                        current process performance.
+
+                    {% elif item.phase.phase == 'Analyze' %}
+                        Identify root causes and validate
+                        the factors affecting performance.
+
+                    {% elif item.phase.phase == 'Improve' %}
+                        Develop, test, and implement
+                        solutions to improve the process.
+
+                    {% elif item.phase.phase == 'Control' %}
+                        Establish controls and monitoring
+                        to sustain the improvements.
+                    {% endif %}
+
+                </p>
+
+                
+                <!-- Deliverable Progress -->
+                <div class="mt-3 mb-3">
+
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+
+                        <small class="fw-semibold">
+                            Deliverable Progress
+                        </small>
+
+                        <small class="text-muted">
+                            {{ item.completed_deliverables }}/{{ item.total_deliverables }}
+                            ({{ item.deliverable_progress|floatformat:0 }}%)
+                        </small>
+
+                    </div>
+
+                    <div class="progress" style="height: 7px;">
+
+                        <!-- Not Started -->
+                        <div
+                            class="progress-bar bg-secondary"
+                            role="progressbar"
+                            style="width: {{ item.not_started_progress }}%;"
+                            aria-valuenow="{{ item.not_started_progress }}"
+                            aria-valuemin="0"
+                            aria-valuemax="100"
+                            title="Not Started: {{ item.not_started_deliverables }}">
+                        </div>
+
+                        <!-- In Progress -->
+                        <div
+                            class="progress-bar bg-primary"
+                            role="progressbar"
+                            style="width: {{ item.in_progress_progress }}%;"
+                            aria-valuenow="{{ item.in_progress_progress }}"
+                            aria-valuemin="0"
+                            aria-valuemax="100"
+                            title="In Progress: {{ item.in_progress_deliverables }}">
+                        </div>
+
+                        <!-- Completed -->
+                        <div
+                            class="progress-bar bg-success"
+                            role="progressbar"
+                            style="width: {{ item.deliverable_progress }}%;"
+                            aria-valuenow="{{ item.deliverable_progress }}"
+                            aria-valuemin="0"
+                            aria-valuemax="100"
+                            title="Completed: {{ item.completed_deliverables }}">
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="mt-3">
+                    <div class="d-flex justify-content-between small mb-2">
+                        <span class="text-muted">Deliverable Status</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between small mb-2">
+                        <span>
+                            <i class="bi bi-circle-fill text-secondary me-1"></i>
+                            Not Started
+                        </span>
+                        <strong>{{ item.not_started_deliverables }}</strong>
+                    </div>
+
+                    <div class="d-flex justify-content-between small mb-2">
+                        <span>
+                            <i class="bi bi-circle-fill text-primary me-1"></i>
+                            In Progress
+                        </span>
+                        <strong>{{ item.in_progress_deliverables }}</strong>
+                    </div>
+
+                    <div class="d-flex justify-content-between small">
+                        <span>
+                            <i class="bi bi-circle-fill text-success me-1"></i>
+                            Completed
+                        </span>
+                        <strong>{{ item.completed_deliverables }}</strong>
+                    </div>
+                </div>
+
+
+                {% if item.overdue_deliverables > 0 %}
+                    <div class="mt-2">
+                        <span class="badge bg-danger">
+                            <i class="bi bi-exclamation-triangle me-1"></i>
+                            {{ item.overdue_deliverables }} Overdue
+                        </span>
+                    </div>
+                {% endif %}
+
+
+
+                <hr>
+
+                <div class="small text-muted">
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Start Date</span>
+                        <span>
+                            {% if item.phase.start_date %}
+                                {{ item.phase.start_date|date:"M d, Y" }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </span>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <span>Completion Date</span>
+                        <span>
+                            {% if item.phase.completion_date %}
+                                {{ item.phase.completion_date|date:"M d, Y" }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </span>
+                    </div>
+
+                </div>
+
+                <div class="mt-4">
+
+                    <a href="{% url 'dmaic_phase_detail' project.id item.phase.id %}"
+                    class="btn btn-outline-primary btn-sm w-100">
+
+                        Manage Phase
+                        <i class="bi bi-arrow-right ms-1"></i>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

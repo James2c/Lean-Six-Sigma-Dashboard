@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="mb-1">Delete Deliverable</h2>
+
+            <p class="text-muted mb-0">
+                {{ project.name }} / {{ phase.phase }} Phase
+            </p>
+        </div>
+
+        <a href="{% url 'dmaic_phase_detail' project.id phase.id %}"
+           class="btn btn-outline-secondary">
+
+            <i class="bi bi-arrow-left me-1"></i>
+            Back to Phase
+
+        </a>
+
+    </div>
+
+
+    <!-- Confirmation Card -->
+    <div class="content-card">
+
+        <div class="p-4">
+
+            <div class="text-center py-4">
+
+                <i class="bi bi-exclamation-triangle text-danger"
+                   style="font-size: 3rem;"></i>
+
+                <h4 class="mt-3">
+                    Delete This Deliverable?
+                </h4>
+
+                <p class="text-muted mt-2">
+                    Are you sure you want to delete
+                    <strong>{{ deliverable.name }}</strong>?
+                </p>
+
+                <p class="text-muted small">
+                    This action cannot be undone.
+                </p>
+
+            </div>
+
+
+            <div class="d-flex justify-content-center gap-2">
+
+                <a href="{% url 'dmaic_phase_detail' project.id phase.id %}"
+                   class="btn btn-outline-secondary">
+
+                    Cancel
+
+                </a>
+
+                <form method="POST">
+
+                    {% csrf_token %}
+
+                    <button type="submit" class="btn btn-danger">
+
+                        <i class="bi bi-trash me-1"></i>
+                        Delete Deliverable
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

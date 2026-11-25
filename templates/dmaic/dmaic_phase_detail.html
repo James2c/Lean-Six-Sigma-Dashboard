@@ -1,0 +1,560 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h4 class="mb-1">{{ phase.phase }} Phase</h4>
+
+            <p class="text-muted mb-0">
+                {{ project.name }} / DMAIC Workspace
+            </p>
+        </div>
+
+        <a href="{% url 'dmaic_workspace' project.id %}"
+           class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>
+            Back to DMAIC
+        </a>
+
+    </div>
+
+
+    <!-- Phase Information -->
+    <div class="content-card p-4 mb-4">
+
+        <div class="row g-3">
+
+            <div class="col-md-4">
+                <div class="detail-label">Project</div>
+                <div class="detail-value">
+                    {{ project.name }}
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="detail-label">DMAIC Phase</div>
+                <div class="detail-value">
+                    {{ phase.phase }}
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="detail-label">Current Status</div>
+                <div class="detail-value">
+
+                    {% if phase.status == 'Completed' %}
+
+                        <span class="badge bg-success">
+                            Completed
+                        </span>
+
+                    {% elif phase.status == 'In Progress' %}
+
+                        <span class="badge bg-primary">
+                            In Progress
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge bg-secondary">
+                            Not Started
+                        </span>
+
+                    {% endif %}
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Phase Description -->
+    <div class="content-card p-4 mb-4">
+
+        <h5 class="mb-3">Phase Overview</h5>
+
+        {% if phase.phase == 'Define' %}
+
+            <p class="text-muted mb-0">
+                Define the business problem, project objectives,
+                scope, stakeholders, and customer requirements.
+                Establish a clear understanding of what the
+                improvement project intends to accomplish.
+            </p>
+
+        {% elif phase.phase == 'Measure' %}
+
+            <p class="text-muted mb-0">
+                Establish the current process performance,
+                identify key metrics, and collect reliable
+                baseline data to quantify the problem.
+            </p>
+
+        {% elif phase.phase == 'Analyze' %}
+
+            <p class="text-muted mb-0">
+                Investigate the collected data, identify
+                potential root causes, and validate the factors
+                responsible for process performance issues.
+            </p>
+
+        {% elif phase.phase == 'Improve' %}
+
+            <p class="text-muted mb-0">
+                Develop potential solutions, evaluate alternatives,
+                test improvements, and implement the selected
+                solutions to improve process performance.
+            </p>
+
+        {% elif phase.phase == 'Control' %}
+
+            <p class="text-muted mb-0">
+                Establish monitoring procedures, standardize
+                improvements, and implement controls to sustain
+                the gains achieved by the project.
+            </p>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- Phase Management Form -->
+    <div class="content-card">
+
+        <div class="content-card-header">
+            <h5 class="mb-0">Phase Management</h5>
+        </div>
+
+        <div class="p-4">
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger" role="alert">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+
+                        {% for error in form.non_field_errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- Status -->
+                <div class="mb-4">
+
+                    <label class="form-label fw-semibold">
+                        Phase Status
+                    </label>
+
+                    {{ form.status }}
+
+                    {% for error in form.status.errors %}
+                        <div class="text-danger small mt-1">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- Dates -->
+                <div class="row g-3 mb-4">
+
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">
+                            Start Date
+                        </label>
+
+                        {{ form.start_date }}
+
+                        {% for error in form.start_date.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+
+                    </div>
+
+
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">
+                            Completion Date
+                        </label>
+
+                        {{ form.completion_date }}
+
+                        {% for error in form.completion_date.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+
+                <!-- Notes -->
+                <div class="mb-4">
+
+                    <label class="form-label fw-semibold">
+                        Phase Notes
+                    </label>
+
+                    {{ form.notes }}
+
+                    {% for error in form.notes.errors %}
+                        <div class="text-danger small mt-1">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+
+                    <div class="form-text">
+                        Document findings, decisions, observations,
+                        and important phase updates.
+                    </div>
+
+                </div>
+
+
+                <!-- Actions -->
+                <div class="d-flex justify-content-end gap-2">
+
+                    <a href="{% url 'dmaic_workspace' project.id %}"
+                       class="btn btn-outline-secondary">
+                        Cancel
+                    </a>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-lg me-1"></i>
+                        Save Changes
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Phase Deliverables -->
+<div class="content-card mt-4">
+
+    <div class="content-card-header d-flex justify-content-between align-items-center">
+
+        <h5 class="mb-0">
+            <i class="bi bi-clipboard-check me-2"></i>
+            Phase Deliverables
+        </h5>
+
+        <a href="{% url 'deliverable_create' project.id phase.id %}"
+           class="btn btn-primary btn-sm">
+
+            <i class="bi bi-plus-lg me-1"></i>
+            Add Deliverable
+
+        </a>
+
+    </div>
+
+
+    <div class="p-4">
+        
+        <!-- Deliverable Progress Summary -->
+        <div class="row g-3 mb-4">
+
+            <div class="col-md-3">
+
+                <div class="kpi-card">
+
+                    <div class="kpi-card-header">
+                        <span class="kpi-label">Total Deliverables</span>
+                        <div class="kpi-icon icon-blue">
+                            <i class="bi bi-clipboard-data"></i>
+                        </div>
+                    </div>
+
+                    <div class="kpi-value">
+                        {{ total_deliverables }}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-3">
+
+                <div class="kpi-card">
+
+                    <div class="kpi-card-header">
+                        <span class="kpi-label">Completed</span>
+                        <div class="kpi-icon icon-green">
+                            <i class="bi bi-check-circle"></i>
+                        </div>
+                    </div>
+
+                    <div class="kpi-value">
+                        {{ completed_deliverables }}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-3">
+
+                <div class="kpi-card">
+
+                    <div class="kpi-card-header">
+                        <span class="kpi-label">Completion Rate</span>
+                        <div class="kpi-icon icon-purple">
+                            <i class="bi bi-graph-up"></i>
+                        </div>
+                    </div>
+
+                    <div class="kpi-value">
+                        {{ deliverable_progress|floatformat:0 }}%
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Overdue Deliverables -->
+            <div class="col-md-3">
+
+                <div class="kpi-card">
+
+                    <div class="kpi-card-header">
+
+                        <span class="kpi-label">
+                            Overdue
+                        </span>
+
+                        <div class="kpi-icon icon-purple">
+                            <i class="bi bi-exclamation-triangle"></i>
+                        </div>
+
+                    </div>
+
+                    <div class="kpi-value">
+                        {{ overdue_count }}
+                    </div>
+
+                    <div class="kpi-note">
+                        Past due and incomplete
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- Deliverable Progress Bar -->
+        <div class="mb-4">
+
+            <div class="d-flex justify-content-between mb-2">
+
+                <span class="fw-semibold">
+                    Deliverable Progress
+                </span>
+
+                <span class="text-muted">
+                    {{ completed_deliverables }} of {{ total_deliverables }}
+                </span>
+
+            </div>
+
+            <div class="progress" style="height: 10px;">
+
+                <div class="progress-bar"
+                    role="progressbar"
+                    style="width: {{ deliverable_progress }}%;"
+                    aria-valuenow="{{ deliverable_progress }}"
+                    aria-valuemin="0"
+                    aria-valuemax="100">
+                </div>
+
+            </div>
+
+        </div>
+
+
+        {% if deliverables %}
+
+            <div class="table-responsive">
+
+                <table class="table align-middle">
+
+                    <thead>
+                        <tr>
+                            <th>Deliverable</th>
+                            <th>Status</th>
+                            <th>Due Date</th>
+                            <th>Completed</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for deliverable in deliverables %}
+
+                            <tr>
+
+                                <td>
+
+                                    
+                                    <div class="d-flex align-items-center gap-2 flex-wrap">
+
+                                        <strong>
+                                            {{ deliverable.name }}
+                                        </strong>
+
+                                        {% if deliverable.status != 'Completed' and deliverable.due_date and deliverable.due_date < today %}
+
+                                            <span class="badge bg-danger">
+                                                <i class="bi bi-exclamation-circle me-1"></i>
+                                                Overdue
+                                            </span>
+
+                                        {% endif %}
+
+                                    </div>
+
+
+                                    {% if deliverable.description %}
+                                        <div class="text-muted small mt-1">
+                                            {{ deliverable.description }}
+                                        </div>
+                                    {% endif %}
+
+                                </td>
+
+
+                                <td>
+
+                                    {% if deliverable.status == 'Completed' %}
+
+                                        <span class="badge bg-success">
+                                            Completed
+                                        </span>
+
+                                    {% elif deliverable.status == 'In Progress' %}
+
+                                        <span class="badge bg-primary">
+                                            In Progress
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="badge bg-secondary">
+                                            Not Started
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <td>
+                                    {% if deliverable.due_date %}
+                                        {{ deliverable.due_date|date:"M d, Y" }}
+                                    {% else %}
+                                        <span class="text-muted">—</span>
+                                    {% endif %}
+                                </td>
+
+
+                                <td>
+                                    {% if deliverable.completed_at %}
+                                        {{ deliverable.completed_at|date:"M d, Y" }}
+                                    {% else %}
+                                        <span class="text-muted">—</span>
+                                    {% endif %}
+                                </td>
+
+
+                                <td class="text-end">
+
+                                    
+                                    <div class="d-flex justify-content-end gap-2">
+
+                                        <a href="{% url 'deliverable_edit' project.id phase.id deliverable.id %}"
+                                        class="btn btn-sm btn-outline-primary">
+
+                                            <i class="bi bi-pencil"></i>
+                                            Edit
+
+                                        </a>
+
+                                        <a href="{% url 'deliverable_delete' project.id phase.id deliverable.id %}"
+                                        class="btn btn-sm btn-outline-danger">
+
+                                            <i class="bi bi-trash"></i>
+                                            Delete
+
+                                        </a>
+
+                                    </div>
+
+
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <div class="text-center py-4">
+
+                <i class="bi bi-clipboard-plus text-muted"
+                   style="font-size: 2rem;"></i>
+
+                <h6 class="mt-3">No Deliverables Yet</h6>
+
+                <p class="text-muted mb-0">
+                    Add deliverables to track the work required
+                    to complete this DMAIC phase.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+{% endblock %}

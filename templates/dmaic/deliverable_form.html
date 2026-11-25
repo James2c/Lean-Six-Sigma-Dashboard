@@ -1,0 +1,157 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="mb-1">
+                {% if is_edit %}
+                    Edit Deliverable
+                {% else %}
+                    Add Deliverable
+                {% endif %}
+            </h2>
+
+            <p class="text-muted mb-0">
+                {{ project.name }} / {{ phase.phase }} Phase
+            </p>
+        </div>
+
+        <a href="{% url 'dmaic_phase_detail' project.id phase.id %}"
+           class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>
+            Back to Phase
+        </a>
+
+    </div>
+
+
+    <!-- Deliverable Form -->
+    <div class="content-card">
+
+        <div class="content-card-header">
+            <h5 class="mb-0">Deliverable Information</h5>
+        </div>
+
+        <div class="p-4">
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+
+                <!-- Name -->
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Deliverable Name
+                    </label>
+
+                    {{ form.name }}
+
+                    {% for error in form.name.errors %}
+                        <div class="text-danger small mt-1">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- Description -->
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Description
+                    </label>
+
+                    {{ form.description }}
+
+                    {% for error in form.description.errors %}
+                        <div class="text-danger small mt-1">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- Status and Due Date -->
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Status
+                        </label>
+
+                        {{ form.status }}
+
+                        {% for error in form.status.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+
+                    </div>
+
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Due Date
+                        </label>
+
+                        {{ form.due_date }}
+
+                        {% for error in form.due_date.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+
+                <!-- Actions -->
+                <div class="d-flex justify-content-end gap-2 mt-4">
+
+                    <a href="{% url 'dmaic_phase_detail' project.id phase.id %}"
+                       class="btn btn-outline-secondary">
+                        Cancel
+                    </a>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle me-1"></i>
+
+                        {% if is_edit %}
+                            Save Changes
+                        {% else %}
+                            Create Deliverable
+                        {% endif %}
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

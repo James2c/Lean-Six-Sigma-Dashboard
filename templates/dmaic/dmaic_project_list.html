@@ -1,0 +1,174 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <div class="dashboard-heading mb-4">
+
+        <div>
+            <h4>DMAIC Workspace</h4>
+            <p class="text-muted mb-0">
+                Select a project to access its improvement workspace.
+            </p>
+        </div>
+
+    </div>
+
+
+    <!-- Project Summary -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-4">
+
+            <div class="kpi-card">
+
+                <div class="kpi-card-header">
+                    <span class="kpi-label">Total Projects</span>
+
+                    <div class="kpi-icon icon-blue">
+                        <i class="bi bi-folder"></i>
+                    </div>
+                </div>
+
+                <div class="kpi-value">
+                    {{ projects.count }}
+                </div>
+
+                <div class="kpi-note">
+                    Available improvement projects
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Project Selection -->
+    <div class="content-card">
+
+        <div class="content-card-header">
+
+            <h5 class="mb-0">Select a Project</h5>
+
+            <span class="text-muted small">
+                {{ projects.count }} projects
+            </span>
+
+        </div>
+
+
+        <div class="table-responsive">
+
+            <table class="table project-table align-middle mb-0">
+
+                <thead>
+                    <tr>
+                        <th>Project Name</th>
+                        <th>Status</th>
+                        <th>Priority</th>
+                        <th>Start Date</th>
+                        <th>DMAIC Workspace</th>
+                    </tr>
+                </thead>
+
+
+                <tbody>
+
+                    {% for project in projects %}
+
+                    <tr>
+
+                        <td>
+                            <strong>
+                                {{ project.name }}
+                            </strong>
+                        </td>
+
+
+                        <td>
+
+                            <span class="badge status-badge status-{{ project.status|slugify }}">
+                                {{ project.status }}
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            <span class="badge priority-badge priority-{{ project.priority|slugify }}">
+                                {{ project.priority }}
+                            </span>
+
+                        </td>
+
+
+                        <td>
+                            {% if project.start_date %}
+                                {{ project.start_date|date:"M d, Y" }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+
+
+                        <td>
+
+                            <a href="{% url 'dmaic_workspace' project.id %}"
+                               class="btn btn-primary btn-sm">
+
+                                Open Workspace
+                                <i class="bi bi-arrow-right ms-1"></i>
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="5" class="text-center py-5">
+
+                            <i class="bi bi-folder2-open fs-2 text-muted"></i>
+
+                            <h6 class="mt-3">
+                                No Projects Available
+                            </h6>
+
+                            <p class="text-muted small">
+                                Create a project before starting a DMAIC workspace.
+                            </p>
+
+                            <a href="{% url 'project_create' %}"
+                               class="btn btn-primary btn-sm">
+
+                                <i class="bi bi-plus-lg me-1"></i>
+                                Create Project
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

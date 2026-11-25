@@ -607,3 +607,15 @@ textarea {
         align-items: flex-start;
     }
 }
+
+/* DMAIC Phase Links */
+
+.dmaic-phase-link {
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.dmaic-phase-link:hover {
+    color: var(--primary);
+}

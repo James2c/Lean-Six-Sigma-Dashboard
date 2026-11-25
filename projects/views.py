@@ -92,11 +92,30 @@ def project_create(request):
     )
 
 
+
 def project_detail(request, project_id):
+
     project = get_object_or_404(Project, id=project_id)
+
+    phases = project.dmaic_phases.all()
+
+    total_phases = phases.count()
+
+    completed_phases = phases.filter(
+        status='Completed'
+    ).count()
+
+    progress_percentage = (
+        (completed_phases / total_phases) * 100
+        if total_phases > 0
+        else 0
+    )
 
     context = {
         'project': project,
+        'total_phases': total_phases,
+        'completed_phases': completed_phases,
+        'progress_percentage': progress_percentage,
     }
 
     return render(
@@ -104,6 +123,7 @@ def project_detail(request, project_id):
         'projects/project_detail.html',
         context
     )
+
 
 
 def project_edit(request, project_id):
