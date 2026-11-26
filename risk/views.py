@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404, redirect, render
+from django.db.models import F
 
 from .forms import RiskForm
 from projects.models import Project
@@ -13,9 +14,31 @@ def risk_list(request, project_id):
 
     risks = project.risks.all()
 
+    status_filter = request.GET.get('status')
+
+    if status_filter == 'open':
+        risks = risks.filter(
+            status__in=['Open', 'In Progress']
+        )
+
+    elif status_filter == 'critical':
+        risks = risks.filter(
+            status__in=['Open', 'In Progress']
+        ).annotate(
+            calculated_score=F('likelihood') * F('impact')
+        ).filter(
+            calculated_score__gt=16
+        )
+
+    elif status_filter == 'mitigated':
+        risks = risks.filter(
+            status='Mitigated'
+        )
+
     context = {
         'project': project,
         'risks': risks,
+        'status_filter': status_filter,
     }
 
     return render(

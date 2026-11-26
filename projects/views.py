@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.db.models import Q, Prefetch
+from django.db.models import Q, Prefetch, F, Count
 from .models import Project
 from .forms import ProjectForm
 from django.core.paginator import Paginator
@@ -181,6 +181,66 @@ def project_detail(request, project_id):
         else 0
     )
 
+    # Risk Summary
+
+    open_risks = project.risks.filter(
+        status__in=['Open', 'In Progress']
+    ).count()
+
+    critical_risks = project.risks.filter(
+        status__in=['Open', 'In Progress']
+    ).annotate(
+        calculated_score=F('likelihood') * F('impact')
+    ).filter(
+        calculated_score__gt=16
+    ).count()
+
+    mitigated_risks = project.risks.filter(
+        status='Mitigated'
+    ).count()
+
+    # Risk Distribution
+
+    risk_distribution = project.risks.filter(
+        status__in=['Open', 'In Progress']
+    ).annotate(
+        calculated_score=F('likelihood') * F('impact')
+    ).aggregate(
+        low_risks=Count(
+            'id',
+            filter=Q(calculated_score__lte=4)
+        ),
+        moderate_risks=Count(
+            'id',
+            filter=Q(
+                calculated_score__gte=5,
+                calculated_score__lte=9
+            )
+        ),
+        high_risks=Count(
+            'id',
+            filter=Q(
+                calculated_score__gte=10,
+                calculated_score__lte=16
+            )
+        ),
+        critical_distribution_risks=Count(
+            'id',
+            filter=Q(calculated_score__gt=16)
+        )
+    )
+
+    # Risk Category Distribution
+
+    risk_category_distribution = project.risks.filter(
+        status__in=['Open', 'In Progress']
+    ).values(
+        'category'
+    ).annotate(
+        total=Count('id')
+    ).order_by('category')
+
+
     context = {
         'project': project,
         'total_phases': total_phases,
@@ -194,6 +254,15 @@ def project_detail(request, project_id):
         'no_target_count': metric_status_counts['No Target'],
         'total_metrics': total_metrics,
         'on_target_percentage': on_target_percentage,
+
+        'open_risks': open_risks,
+        'critical_risks': critical_risks,
+        'mitigated_risks': mitigated_risks,
+        'low_risks': risk_distribution['low_risks'],
+        'moderate_risks': risk_distribution['moderate_risks'],
+        'high_risks': risk_distribution['high_risks'],
+        'critical_distribution_risks': risk_distribution['critical_distribution_risks'],
+        'risk_category_distribution': risk_category_distribution,
     }
 
     return render(
