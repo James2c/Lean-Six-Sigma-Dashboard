@@ -12,4 +12,5 @@ urlpatterns = [
     path('dmaic/', include(dmaic_urls)),
     path('performance/', include(performance_urls)),
     path('risk/', include('risk.urls')),
+    path('fmea/', include('fmea.urls')),
 ]

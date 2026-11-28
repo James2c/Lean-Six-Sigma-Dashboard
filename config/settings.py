@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'toolkit',
     'quality',
     'risk',
+    'fmea',
     'performance',
     'finance',
     'reports',

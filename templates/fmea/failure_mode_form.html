@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if is_edit %}Edit Failure Mode{% else %}Add Failure Mode{% endif %} | SigmaFlow
+{% endblock %}
+
+{% block page_title %}
+    {% if is_edit %}Edit Failure Mode{% else %}Add Failure Mode{% endif %}
+{% endblock %}
+
+{% block breadcrumb %}
+    Home / Projects / {{ project.name }} / FMEA / Add Failure Mode
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="content-card">
+
+        <div class="content-card-header">
+            <h5 class="mb-0">
+                {% if is_edit %}Edit Failure Mode{% else %}Failure Mode Details{% endif %}
+            </h5>
+        </div>
+
+        <div class="card-body px-4 py-4">
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <div class="row g-3">
+
+                    <div class="col-12">
+                        <h6 class="fw-bold text-primary border-bottom pb-2 mb-2">
+                            Failure Identification
+                        </h6>
+                    </div>
+
+                    {% for field in form %}
+
+                        {% if field.name == 'prevention_controls' %}
+                            <div class="col-12 mt-4">
+                                <h6 class="fw-bold text-primary border-bottom pb-2 mb-2">
+                                    Current Controls
+                                </h6>
+                            </div>
+                        {% endif %}
+
+                        {% if field.name == 'severity' %}
+                            <div class="col-12 mt-4">
+                                <h6 class="fw-bold text-primary border-bottom pb-2 mb-2">
+                                    Risk Assessment
+                                </h6>
+                            </div>
+                        {% endif %}
+
+                        <div class="{% if field.name == 'failure_effect' or field.name == 'failure_cause' or field.name == 'prevention_controls' or field.name == 'detection_controls' %}col-12{% else %}col-md-6{% endif %}">
+
+                            <label class="form-label">
+                                {{ field.label }}
+                            </label>
+
+                            {{ field }}
+
+                            {% if field.help_text %}
+                                <div class="form-text">
+                                    {{ field.help_text }}
+                                </div>
+                            {% endif %}
+
+                            {% for error in field.errors %}
+                                <div class="text-danger small">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4">
+
+                    <a href="{% url 'fmea_dashboard' project.id %}"
+                       class="btn btn-outline-secondary">
+                        Cancel
+                    </a>
+
+                    <button type="submit"
+                            class="btn btn-primary">
+                        <i class="bi bi-check-lg me-1"></i>
+                        {% if is_edit %}
+                            Update Failure Mode
+                        {% else %}
+                            Save Failure Mode
+                        {% endif %}
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

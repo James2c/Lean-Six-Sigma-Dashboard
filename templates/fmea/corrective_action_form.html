@@ -1,0 +1,105 @@
+
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if is_edit %}Edit Corrective Action{% else %}Add Corrective Action{% endif %} | SigmaFlow
+{% endblock %}
+
+{% block page_title %}
+    {% if is_edit %}Edit Corrective Action{% else %}Add Corrective Action{% endif %}
+{% endblock %}
+
+{% block breadcrumb %}
+    Home / Projects / {{ project.name }} / FMEA / {{ failure_mode.failure_mode }} / Add Corrective Action
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="content-card">
+
+        <div class="content-card-header">
+
+            <h5 class="mb-0">
+                {% if is_edit %}Edit Corrective Action{% else %}New Corrective Action{% endif %}
+            </h5>
+
+            <small class="text-muted">
+                Failure Mode: {{ failure_mode.failure_mode }}
+            </small>
+
+        </div>
+
+        <div class="card-body px-4 py-4">
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <div class="row g-3">
+
+                    {% for field in form %}
+
+                        <div class="{% if field.name == 'action_description' %}col-12{% else %}col-md-6{% endif %}">
+
+                            <label for="{{ field.id_for_label }}" class="form-label">
+                                {{ field.label }}
+                            </label>
+
+                            {% if field.name == 'effectiveness_verified' %}
+
+                                <div class="form-check">
+                                    {{ field }}
+                                    <label class="form-check-label" for="{{ field.id_for_label }}">
+                                        {{ field.label }}
+                                    </label>
+                                </div>
+
+                            {% else %}
+
+                                {{ field }}
+
+                            {% endif %}
+
+                            {% if field.help_text %}
+                                <div class="form-text">
+                                    {{ field.help_text }}
+                                </div>
+                            {% endif %}
+
+                            {% for error in field.errors %}
+                                <div class="text-danger small">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4">
+
+                    <a href="{% url 'failure_mode_detail' project.id failure_mode.id %}"
+                       class="btn btn-outline-secondary">
+                        Cancel
+                    </a>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle me-1"></i>
+                        {% if is_edit %}Update Corrective Action{% else %}Save Corrective Action{% endif %}
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

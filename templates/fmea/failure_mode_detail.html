@@ -1,0 +1,470 @@
+{% extends 'base.html' %}
+
+{% block title %}Failure Mode Details | SigmaFlow{% endblock %}
+
+{% block page_title %}
+    Failure Mode Details
+{% endblock %}
+
+{% block breadcrumb %}
+    Home / Projects / {{ project.name }} / FMEA / Failure Mode Details
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="content-card">
+
+        <div class="content-card-header d-flex justify-content-between align-items-center">
+
+            <h5 class="mb-0">
+                {{ failure_mode.failure_mode }}
+            </h5>
+
+            <a href="{% url 'failure_mode_edit' project.id failure_mode.id %}"
+               class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-pencil me-1"></i>
+                Edit Failure Mode
+            </a>
+
+        </div>
+
+        <div class="card-body px-4 py-4">
+
+            <h6 class="fw-bold text-primary border-bottom pb-2 mb-3">
+                Failure Identification
+            </h6>
+
+            <div class="mb-3">
+                <div class="detail-label">Process Step</div>
+                <div class="detail-value">
+                    {{ failure_mode.process_step }}
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <div class="detail-label">Failure Effect</div>
+                <div class="detail-value">
+                    {{ failure_mode.failure_effect|linebreaks }}
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <div class="detail-label">Failure Cause</div>
+                <div class="detail-value">
+                    {{ failure_mode.failure_cause|linebreaks }}
+                </div>
+            </div>
+
+            <h6 class="fw-bold text-primary border-bottom pb-2 mb-3 mt-4">
+                Current Controls
+            </h6>
+
+            <div class="mb-3">
+                <div class="detail-label">Prevention Controls</div>
+                <div class="detail-value">
+                    {{ failure_mode.prevention_controls|default:"Not specified"|linebreaks }}
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <div class="detail-label">Detection Controls</div>
+                <div class="detail-value">
+                    {{ failure_mode.detection_controls|default:"Not specified"|linebreaks }}
+                </div>
+            </div>
+
+            <h6 class="fw-bold text-primary border-bottom pb-2 mb-3 mt-4">
+                Risk Assessment
+            </h6>
+
+            <div class="row g-3">
+
+                <div class="col-md-3">
+                    <div class="kpi-card">
+                        <div class="detail-label">Severity</div>
+                        <div class="detail-value">
+                            {{ failure_mode.severity }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="kpi-card">
+                        <div class="detail-label">Occurrence</div>
+                        <div class="detail-value">
+                            {{ failure_mode.occurrence }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="kpi-card">
+                        <div class="detail-label">Detection</div>
+                        <div class="detail-value">
+                            {{ failure_mode.detection }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="kpi-card">
+                        <div class="detail-label">RPN</div>
+                        <div class="detail-value">
+                            {{ failure_mode.rpn }}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="mt-3">
+
+                <div class="detail-label mb-2">
+                    Risk Level
+                </div>
+
+                {% if failure_mode.risk_level == 'Critical' %}
+                    <span class="badge bg-danger">Critical</span>
+
+                {% elif failure_mode.risk_level == 'High' %}
+                    <span class="badge bg-warning text-dark">High</span>
+
+                {% elif failure_mode.risk_level == 'Moderate' %}
+                    <span class="badge bg-info text-dark">Moderate</span>
+
+                {% else %}
+                    <span class="badge bg-success">Low</span>
+
+                {% endif %}
+
+            </div>
+
+            <div class="d-flex justify-content-end mt-4">
+
+                <a href="{% url 'fmea_dashboard' project.id %}"
+                   class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i>
+                    Back to FMEA
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Corrective Action KPI Cards  -->
+    <div class="row row-cols-5 g-3 mt-3 mb-3">
+
+        <div class="col">
+            <div class="kpi-card">
+                <div class="kpi-card-label">Total Actions</div>
+                <div class="kpi-card-value">
+                    {{ total_corrective_actions }}
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="kpi-card">
+                <div class="kpi-card-label">Open Actions</div>
+                <div class="kpi-card-value text-warning">
+                    {{ open_corrective_actions }}
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="kpi-card">
+                <div class="kpi-card-label">Completed Actions</div>
+                <div class="kpi-card-value text-success">
+                    {{ completed_corrective_actions }}
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="kpi-card">
+                <div class="kpi-card-label">Overdue Actions</div>
+                <div class="kpi-card-value text-danger">
+                    {{ overdue_corrective_actions }}
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="kpi-card">
+                <div class="kpi-card-label">Actions Verified</div>
+                <div class="kpi-card-value text-primary">
+                    {{ verified_corrective_actions }}
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Corrective Action Progress -->
+    <div class="content-card p-4 mb-4">
+
+        <div class="mb-2">
+
+            <div class="d-flex justify-content-between align-items-center mb-2">
+
+                <h6 class="mb-0">
+                    Corrective Action Completion
+                </h6>
+
+                <span class="fw-semibold">
+                    {{ completion_percentage|floatformat:0 }}%
+                </span>
+
+            </div>
+
+            <div class="progress" style="height: 10px;">
+
+                <div
+                    class="progress-bar"
+                    role="progressbar"
+                    style="width: {{ completion_percentage }}%; background-color: var(--primary);"
+                    aria-valuenow="{{ completion_percentage }}"
+                    aria-valuemin="0"
+                    aria-valuemax="100">
+                </div>
+
+            </div>
+
+            <small class="text-muted">
+                {{ completed_corrective_actions }} of {{ total_corrective_actions }} corrective actions completed
+            </small>
+
+        </div>
+
+    </div>
+
+    <!-- Effectiveness Verification Progress -->
+    <div class="content-card p-4 mb-4">
+
+        <div class="mb-2">
+
+            <div class="d-flex justify-content-between align-items-center mb-2">
+
+                <h6 class="mb-0">
+                    Effectiveness Verification
+                </h6>
+
+                <span class="fw-semibold">
+                    {{ verification_percentage|floatformat:0 }}%
+                </span>
+
+            </div>
+
+            <div class="progress" style="height: 10px;">
+
+                <div
+                    class="progress-bar"
+                    role="progressbar"
+                    style="width: {{ verification_percentage }}%; background-color: var(--primary);"
+                    aria-valuenow="{{ verification_percentage }}"
+                    aria-valuemin="0"
+                    aria-valuemax="100">
+                </div>
+
+            </div>
+
+            <small class="text-muted">
+                {{ verified_corrective_actions }} of {{ total_corrective_actions }} corrective actions verified
+            </small>
+
+        </div>
+
+    </div>
+
+    <div class="content-card mt-4">
+
+        <div class="content-card-header d-flex justify-content-between align-items-center">
+
+            <div>
+                <h5 class="mb-0">Corrective Actions</h5>
+                <small class="text-muted">
+                    Actions assigned to address this failure mode.
+                </small>
+            </div>
+
+            <div class="d-flex align-items-center gap-2">
+
+                <span class="badge bg-primary">
+                    {{ total_corrective_actions }} Actions
+                </span>
+
+                <a href="{% url 'corrective_action_create' project.id failure_mode.id %}"
+                class="btn btn-sm btn-primary">
+                    <i class="bi bi-plus-circle me-1"></i>
+                    Add Action
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="card-body">
+
+            {% if corrective_actions %}
+
+                <div class="table-responsive">
+
+                    <table class="table table-hover align-middle mb-0">
+
+                        <thead>
+                            <tr>
+                                <th>Action Description</th>
+                                <th>Assigned To</th>
+                                <th>Due Date</th>
+                                <th>Completion Date</th>
+                                <th>Status</th>
+                                <th>Effectiveness</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            {% for action in corrective_actions %}
+
+                                <tr>
+
+                                    <td>
+
+                                        {{ action.action_description }}
+
+                                        {% if action.effectiveness_verified %}
+
+                                            <div class="mt-1">
+                                                <small class="text-success">
+                                                    <i class="bi bi-patch-check-fill me-1"></i>
+                                                    Effectiveness Verified
+                                                </small>
+                                            </div>
+
+                                        {% endif %}
+
+                                    </td>
+
+                                    <td>
+                                        {{ action.assigned_to|default:"Unassigned" }}
+                                    </td>
+
+                                    <td>
+                                        {{ action.due_date|date:"M d, Y"|default:"—" }}
+                                    </td>
+
+                                    <td>
+                                        {{ action.completion_date|date:"M d, Y"|default:"—" }}
+                                    </td>
+
+                                    <td>
+
+                                        {% if action.is_overdue %}
+
+                                            <span class="badge bg-danger">
+                                                <i class="bi bi-exclamation-circle me-1"></i>
+                                                Overdue
+                                            </span>
+
+                                        {% elif action.status == 'Completed' %}
+
+                                            <span class="badge bg-success">Completed</span>
+
+                                        {% elif action.status == 'In Progress' %}
+
+                                            <span class="badge bg-primary">In Progress</span>
+
+                                        {% elif action.status == 'Cancelled' %}
+
+                                            <span class="badge bg-secondary">Cancelled</span>
+
+                                        {% else %}
+
+                                            <span class="badge bg-warning text-dark">Open</span>
+
+                                        {% endif %}
+
+                                    </td>
+
+                                    <td>
+
+                                        {% if action.effectiveness_verified %}
+
+                                            <span class="badge bg-success">
+                                                <i class="bi bi-check-circle me-1"></i>
+                                                Verified
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="badge bg-warning text-dark">
+                                                <i class="bi bi-clock me-1"></i>
+                                                Pending Verification
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+                                    <td class="text-end">
+
+                                        <div class="d-flex justify-content-end gap-2">
+
+                                            <a href="{% url 'corrective_action_edit' project.id failure_mode.id action.id %}"
+                                            class="btn btn-sm btn-outline-primary">
+
+                                                <i class="bi bi-pencil"></i>
+                                                Edit
+
+                                            </a>
+
+                                            <a href="{% url 'corrective_action_delete' project.id failure_mode.id action.id %}"
+                                            class="btn btn-sm btn-outline-danger">
+
+                                                <i class="bi bi-trash"></i>
+                                                Delete
+
+                                            </a>
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            {% else %}
+
+                <div class="text-center py-4">
+
+                    <i class="bi bi-clipboard-check fs-1 text-muted"></i>
+
+                    <p class="text-muted mt-2 mb-0">
+                        No corrective actions have been recorded for this failure mode yet.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
